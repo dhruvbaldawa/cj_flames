@@ -47,8 +47,7 @@ def facebook_authorized(resp):
 def home(resp):
     # Home Page
     me = facebook.get('/me')
-    return _get_friends('me')
-
+    return 'Home Page'
 
 def _get_friends(user):
     """Helper function to get all the friends"""
@@ -60,7 +59,13 @@ def _get_friends(user):
         friends = facebook.get()
         friends_list.extend(friends.data)
     """
-    return json.dumps(friends)
+    return friends.data['data']
+
+def _get_picture(user, image_type='large'):
+    """Helper function to get the profile picture of the user"""
+    query = "/%s/picture" % user
+    return query
+    
 
 @facebook.tokengetter
 def get_facebook_oauth_token():
