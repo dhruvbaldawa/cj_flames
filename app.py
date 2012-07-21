@@ -13,9 +13,8 @@ facebook = oauth.remote_app('facebook',
     access_token_url=ACCESS_TOKEN_URL,
     authorize_url=AUTHORIZE_URL,
     consumer_key=CONSUMER_KEY,
-    consumer_secret=CONSUMER_KEY,
-    request_token_params={'scope': 'email',
-                          'response_type': 'token',  },
+    consumer_secret=CONSUMER_SECRET,
+    request_token_params={'scope': 'email'},
 )
 
 @app.route('/')
