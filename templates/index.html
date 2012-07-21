@@ -8,16 +8,16 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 60px;
         padding-bottom: 40px;
       }
     </style>
-    <link href="css/bootstrap-responsive.css" rel="stylesheet">
-    <script src="js/jquery.js"></script>
-	<script src="js/bootstrap.js"></script>
+    <link href="{{ url_for('static', filename='css/bootstrap-responsive.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
 	<script>
 	$(function()
 	{
@@ -57,11 +57,9 @@ SELECT PERSON 1
 <b class="caret"></b>
 </a>
 <ul class="dropdown-menu">
-<li><a href="#">Action</a></li>
-<li><a href="#">Another action</a></li>
-<li><a href="#">Something else here</a></li>
-
-<li><a href="#">Separated link</a></li>
+{% for friend in friends %}
+<li><a href="#">{{ friend.name }}</a></li>
+{% endfor %}
 </ul>
 </li> 
 
