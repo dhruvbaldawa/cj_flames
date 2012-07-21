@@ -22,6 +22,31 @@ facebook = oauth.remote_app('facebook',
 @app.route('/')
 def index():
     return redirect(url_for('login'))
+	
+def _flame(boy,girl):
+	length=len(boy)+len(girl)
+	f=[]
+	f=list('flame')
+	a=list(boy)
+	b=list(girl)
+	length1=[]
+	length1=list(set(a) & set(b))
+	length=length-(len(length1))
+	pointer=1
+	pointer1=0
+	lesser=0
+	while(len(f)!=1):
+		if(pointer==length):
+			f.remove(f[pointer1])
+			lesser+=1
+		pointer = pointer+1
+		pointer1 = pointer1+1
+		if (pointer>length):
+			pointer=1
+		if (pointer1>4-lesser):
+			pointer1=0
+	return f
+
 
 @app.route('/login')
 def login():
