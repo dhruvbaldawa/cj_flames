@@ -162,7 +162,6 @@ body {
   line-height: 18px;
   color: #333333;
   background-color: #ffffff;
-background-image: url("../img/bg.jpg");
 }
 
 a {
@@ -176,7 +175,6 @@ a:hover {
 }
 
 .row {
-background-image:url("img/bg.jpeg");
   margin-left: -20px;
   *zoom: 1;
 }
@@ -226,29 +224,16 @@ background-image:url("img/bg.jpeg");
   width: 540px;
 }
 
-.span6{
-
-  width: 460px;
-}
-.span6a{
-
-  width: 460px;
-}
-.span6b{
-text-align:right;
+.span6 {
   width: 460px;
 }
 
 .span5 {
-
   width: 380px;
-  
 }
 
 .span4 {
-text-align:center;
   width: 300px;
- 
 }
 
 .span3 {
@@ -256,7 +241,6 @@ text-align:center;
 }
 
 .span2 {
-text-align:center;
   width: 140px;
 }
 
