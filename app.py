@@ -85,7 +85,9 @@ def ajax_friends(q):
     LIMIT 10" % q # Substitute the %s in query with 'q'
     
     friends = facebook.get('/fql?q='+query) # Query with Facebook API
-    return_friends = [] # Initialize an empty list
+    user = _get_details('me')
+    
+    return_friends = [{'id': user['id'], 'name': user['name']}] # Initialize an empty list
     
     # Build the list to be returned
     for friend in friends.data['data']:
@@ -99,15 +101,21 @@ def ajax_friends(q):
 def get_flame(args):
     first = request.args.get('first')
     second = request.args.get('second')
-    first_name = _get_details(first)
-    second_name = _get_details(second)
+    first_name = _get_details(first)['name']
+    second_name = _get_details(second)['name']
     
     flames = _flame(first_name, second_name)
-    return json.dumps(flames)
+    return_dict = {
+        'first_name': first_name,
+        'second_name': second_name,
+        'result': flames,
+        'message': 'Teri toh lag gayi baap !',
+    }
+    return json.dumps(return_dict)
 
 def _get_details(user='me'):
     me = facebook.get('/%s' % user)
-    return me.data['first_name']
+    return me.data
 
 
 @facebook.tokengetter
