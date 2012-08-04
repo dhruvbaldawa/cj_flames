@@ -75,17 +75,26 @@ def home(resp):
     friends = _get_friends('me')
     return render_template('index.html', friends = friends)
 
-def _get_friends(user):
-    """Helper function to get all the friends"""
-    query = "/%s/friends" % user
-    friends = facebook.get(query)
-    friends_list = []
-    """
-    if 'next' in friends.data['paging']:
-        friends = facebook.get()
-        friends_list.extend(friends.data)
-    """
-    return friends.data['data']
+@app.route('/get_friends')
+@facebook.authorized_handler
+def ajax_friends(q):
+    q = request.args.get('q')
+    # FQL Query
+    query = "\
+    SELECT uid, name FROM user\
+    WHERE strpos(lower(name), '%s') >= 0 AND\
+    uid IN (SELECT uid2 FROM friend WHERE uid1 = me())\
+    " % q # Substitute the %s in query with 'q'
+    
+    friends = facebook.get('/fql?q='+query) # Query with Facebook API
+    return_friends = [] # Initialize an empty list
+    
+    # Build the list to be returned
+    for friend in friends.data['data']:
+        changed_friend = {'key': friend['uid'], 'value': friend['name']}
+        return_friends.append(changed_friends)
+    
+    return json.dumps(return_friends)
 
 def _get_picture(user, image_type='large'):
     """Helper function to get the profile picture of the user"""
