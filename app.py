@@ -71,7 +71,6 @@ def facebook_authorized(resp):
 @facebook.authorized_handler
 def home(resp):
     # Home Page
-    me = facebook.get('/me')
     return render_template('index.html')
 
 @app.route('/get_friends')
@@ -95,11 +94,21 @@ def ajax_friends(q):
     
     return json.dumps(return_friends)
 
-def _get_picture(user, image_type='large'):
-    """Helper function to get the profile picture of the user"""
-    query = facebook.base_url + "/%s/picture" % user
-    return query
+@app.route('/flame')
+@facebook.authorized_handler
+def get_flame(args):
+    first = request.args.get('first')
+    second = request.args.get('second')
+    first_name = _get_details(first)
+    second_name = _get_details(second)
     
+    flames = _flame(first_name, second_name)
+    return json.dumps(flames)
+
+def _get_details(user='me'):
+    me = facebook.get('/%s' % user)
+    return me.data['first_name']
+
 
 @facebook.tokengetter
 def get_facebook_oauth_token():

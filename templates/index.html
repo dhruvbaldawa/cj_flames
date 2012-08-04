@@ -43,6 +43,16 @@
 		
         $("#firstuser").tokenInput("{{url_for('ajax_friends')}}", options);
 		$("#seconduser").tokenInput("{{url_for('ajax_friends')}}", second_option);
+		
+		$('#myModal').live('show', function() {
+			$.ajax({
+				url: "{{url_for('get_flame')}}",
+				data: {'first': $("#firstuser").val(), 'second': $("#seconduser").val()},
+				success: function (data){
+					alert(data)
+				}, 
+			})
+		});
     });
     </script>
 
