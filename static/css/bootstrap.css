@@ -4203,6 +4203,11 @@ input[type="submit"].btn.btn-mini {
 }
 
 .modal-header {
+font:itlaic;
+padding:4px;
+color:#fff;
+font-weight:200;
+font-size:20px;
   padding: 9px 15px;
   border-bottom: 1px solid #000;
 }
