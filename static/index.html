@@ -16,7 +16,7 @@
 $(document).ready(function()
 {
 $('#firstuser').fcbkcomplete({
-json_url: "data.txt",
+json_url: {{url_for('ajax_friends')}},
 cache: true,
 filter_case: true,
 filter_hide: true,
@@ -126,25 +126,25 @@ $("#myModal").live('shown', function()
 
 <div class="row">
 <div class="span5">
-<img src="img/f.jpg"  height="160" width="160" border="4" align="left" >
+<img src="{{url_for('static', filename='img/f.jpg')}}"  height="160" width="160" border="4" align="left" >
 </div>
 <div class="span5" align="center">
-<img src="img/l.jpg" height="160" width="160" border="4" >
+<img src="{{url_for('static', filename='img/l.jpg')}}" height="160" width="160" border="4" >
 </div>
 <div class="span5">
-<img src="img/a.jpg" height="160" width="160" border="4" align="right">
+<img src="{{url_for('static', filename='img/a.jpg')}}" height="160" width="160" border="4" align="right">
 </div>
 
 </div>
 <div class="row">
 <div class="span6" >
-<img src="img/m.jpg"  height="160" width="160" border="4" align="right" >
+<img src="{{url_for('static', filename='img/m.jpg')}}"  height="160" width="160" border="4" align="right" >
 </div>
 <div class="span3" >
 <p> &nbsp </p>
 </div>
 <div class="span6">
-<img src="img/e.jpg" height="160" width="160" border="4" align="left">
+<img src="{{url_for('static', filename='img/e.jpg')}}" height="160" width="160" border="4" align="left">
 </div>
 
 </div>

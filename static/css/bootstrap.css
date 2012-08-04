@@ -4175,8 +4175,8 @@ input[type="submit"].btn.btn-mini {
   margin: -250px 0 0 -280px;
   overflow: auto;
   background-color: #000;
-  border: 1px solid #999;
-  border: 1px solid rgba(0, 0, 0, 0.3);
+  border: 1px solid #000;
+
   *border: 1px solid #999;
   -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
@@ -4226,7 +4226,7 @@ input[type="submit"].btn.btn-mini {
   margin-bottom: 0;
   text-align: right;
   background-color: #000;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #000;
   -webkit-border-radius: 0 0 6px 6px;
      -moz-border-radius: 0 0 6px 6px;
           border-radius: 0 0 6px 6px;
