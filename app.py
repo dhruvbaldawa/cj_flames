@@ -72,26 +72,25 @@ def facebook_authorized(resp):
 def home(resp):
     # Home Page
     me = facebook.get('/me')
-    friends = _get_friends('me')
-    return render_template('index.html', friends = friends)
+    return render_template('index.html')
 
 @app.route('/get_friends')
 @facebook.authorized_handler
 def ajax_friends(q):
-    q = request.args.get('q')
+    q = request.args.get('tag')
     # FQL Query
     query = "\
     SELECT uid, name FROM user\
     WHERE strpos(lower(name), '%s') >= 0 AND\
     uid IN (SELECT uid2 FROM friend WHERE uid1 = me())\
-    " % q # Substitute the %s in query with 'q'
+    LIMIT 10" % q # Substitute the %s in query with 'q'
     
     friends = facebook.get('/fql?q='+query) # Query with Facebook API
     return_friends = [] # Initialize an empty list
     
     # Build the list to be returned
     for friend in friends.data['data']:
-        changed_friend = {'key': friend['uid'], 'value': friend['name']}
+        changed_friend = {'id': friend['uid'], 'name': friend['name'], 'readonly': 'true'}
         return_friends.append(changed_friend)
     
     return json.dumps(return_friends)
