@@ -92,7 +92,7 @@ def ajax_friends(q):
     # Build the list to be returned
     for friend in friends.data['data']:
         changed_friend = {'key': friend['uid'], 'value': friend['name']}
-        return_friends.append(changed_friends)
+        return_friends.append(changed_friend)
     
     return json.dumps(return_friends)
 
