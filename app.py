@@ -21,7 +21,7 @@ facebook = oauth.remote_app('facebook',
 
 @app.route('/')
 def index():
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
 	
 def _flame(boy, girl):
 	length = len(boy) + len(girl)
@@ -45,6 +45,7 @@ def _flame(boy, girl):
 			pointer=1
 		if pointer1 > 4-lesser:
 			pointer1=0
+
 	return f
 
 
@@ -104,12 +105,28 @@ def get_flame(args):
     first_name = _get_details(first)['name']
     second_name = _get_details(second)['name']
     
-    flames = _flame(first_name, second_name)
+    flames = _flame(first_name, second_name)[0]
+    flame_dict = {
+	    'f': 'Friends',
+	    'l': 'Love',
+	    'a': 'Affair',
+	    'm': 'Married',
+	    'e': 'Enemy',
+	}
+	
+    message = {
+		'f': 'Friends for ever' ,
+		'l': 'True Love',
+		'a': 'Chup Chup ke',
+		'm': 'Made for each other',
+		'e': 'Teri kehke lunga',
+	}
+
     return_dict = {
         'first_name': first_name,
         'second_name': second_name,
-        'result': flames,
-        'message': 'Teri toh lag gayi baap !',
+        'result': flame_dict[flames],
+        'message': message[flames],
     }
     return json.dumps(return_dict)
 
