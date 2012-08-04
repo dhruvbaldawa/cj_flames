@@ -114,7 +114,7 @@ def get_flame(args):
 	    'e': 'Enemy',
 	}
 	
-	message = {
+    message = {
 		'f': 'Friends for ever' ,
 		'l': 'True Love',
 		'a': 'Chup Chup ke',
