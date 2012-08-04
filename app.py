@@ -105,7 +105,7 @@ def get_flame(args):
     first_name = _get_details(first)['name']
     second_name = _get_details(second)['name']
     
-    flames = _flame(first_name, second_name)
+    flames = _flame(first_name, second_name)[0]
     flame_dict = {
 	    'f': 'Friends',
 	    'l': 'Love',
@@ -125,8 +125,8 @@ def get_flame(args):
     return_dict = {
         'first_name': first_name,
         'second_name': second_name,
-        'result': flame_dict[f],
-        'message': message[f],
+        'result': flame_dict[flames],
+        'message': message[flames],
     }
     return json.dumps(return_dict)
 
