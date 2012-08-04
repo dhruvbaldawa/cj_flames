@@ -105,6 +105,13 @@ def get_flame(args):
     second_name = _get_details(second)['name']
     
     flames = _flame(first_name, second_name)
+	message={
+		'f':'Friends for ever' ,
+		'l':'True Love',
+		'a':'Chup Chup ke',
+		'm':'Made for each other',
+		'e':'Teri kehke lunga',
+	}
     return_dict = {
         'first_name': first_name,
         'second_name': second_name,
