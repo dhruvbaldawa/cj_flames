@@ -19,7 +19,7 @@ facebook = oauth.remote_app('facebook',
                                     user_photos, friends_photos'},
 )
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
     return redirect(url_for('home'))
 	
