@@ -46,7 +46,7 @@
 		$('#myModal').live('hide',function()
 		        {
 		         $('.modal-header').html("Please wait while the results are loading...");
-				$('#message').html();
+				$('#message').html('');
 				$('#modalimage').attr('src',"{{url_for('static', filename='img/ajax-loader.gif')}}"); 
 				$('#modalimage').animate({
 						height:100,
