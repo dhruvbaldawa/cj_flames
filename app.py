@@ -21,7 +21,7 @@ facebook = oauth.remote_app('facebook',
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return redirect(url_for('home'))
+    return redirect(url_for('login'))
 	
 def _flame(boy, girl):
 	length = len(boy) + len(girl)
@@ -58,15 +58,16 @@ def login():
 @app.route('/login/authorized')
 @facebook.authorized_handler
 def facebook_authorized(resp):
-    if resp is None:
-        return 'Access denied: reason=%s error=%s' % (
+	if resp is None:
+		return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
             request.args['error_description']
         )
-    session['oauth_token'] = (resp['access_token'], '')
-    me = facebook.get('/me')
-    return 'Logged in as id=%s name=%s redirect=%s' % \
-        (me.data['id'], me.data['name'], request.args.get('next'))
+	session['oauth_token'] = (resp['access_token'], '')
+	me = facebook.get('/me')
+    #return 'Logged in as id=%s name=%s redirect=%s' % \
+        #(me.data['id'], me.data['name'], request.args.get('next'))
+	return redirect(url_for('home'))
 
 @app.route('/home')
 @facebook.authorized_handler
