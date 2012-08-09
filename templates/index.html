@@ -43,14 +43,24 @@
 		
         $("#firstuser").tokenInput("{{url_for('ajax_friends')}}", options);
 		$("#seconduser").tokenInput("{{url_for('ajax_friends')}}", second_option);
-		
+		$('#myModal').live('hide',function()
+		        {
+		         $('.modal-header').html("Please wait while the results are loading...");
+				 $('#modalimage').animate({
+						height:100,
+						width:100,
+						src:"{{url_for('static', filename='img/ajax-loader.gif')}}",
+					});
+				 
+		        
+		});
 		$('#myModal').live('show', function() {
 			$.ajax({
 				url: "{{url_for('get_flame')}}",
 				data: {'first': $("#firstuser").val(), 'second': $("#seconduser").val()},
 				dataType: 'json',
 				success: function (data){
-					$('.modal-header').html(data.message);
+					$('.modal-header').html("Your Result:"+data.message);
 					$('#modalimage').animate({
 						height:400,
 						width:400,
@@ -120,10 +130,10 @@
 <div class="modal hide" id="myModal">
   <div class="modal-header">
     
-Please Wait While The Results Are Loading....
+Please wait while the results are loading...
   </div>
   <div class="modal-body">
-    < <img id="modalimage" src="{{url_for('static', filename='img/ajax-loader.gif')}}" height="100" width="100" align="center">
+    <img id="modalimage" src="{{url_for('static', filename='img/ajax-loader.gif')}}" height="100" width="100" align="center">
   </div>
   <div class="modal-footer">
   <a href="#" class="btn btn-primary" >Share</a>
