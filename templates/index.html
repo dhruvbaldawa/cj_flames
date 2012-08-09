@@ -46,11 +46,12 @@
 		$('#myModal').live('hide',function()
 		        {
 		         $('.modal-header').html("Please wait while the results are loading...");
-				 $('#modalimage').animate({
+				$('#message').html();
+				$('#modalimage').attr('src',"{{url_for('static', filename='img/ajax-loader.gif')}}"); 
+				$('#modalimage').animate({
 						height:100,
 						width:100,
-						src:"{{url_for('static', filename='img/ajax-loader.gif')}}",
-					});
+				});
 				 
 		        
 		});
@@ -60,10 +61,13 @@
 				data: {'first': $("#firstuser").val(), 'second': $("#seconduser").val()},
 				dataType: 'json',
 				success: function (data){
-					$('.modal-header').html("Your Result:"+data.message);
+					$('.modal-header').html("Your Result: "+data.result);
+					$('#message').html(data.message);
+					$('#modalimage').attr('src', data.image);
 					$('#modalimage').animate({
 						height:400,
 						width:400,
+						src: data.image,
 					});
 				}, 
 			})
@@ -133,9 +137,10 @@
 Please wait while the results are loading...
   </div>
   <div class="modal-body">
-    <img id="modalimage" src="{{url_for('static', filename='img/ajax-loader.gif')}}" height="100" width="100" align="center">
+    <center><img id="modalimage" src="{{url_for('static', filename='img/ajax-loader.gif')}}" height="100" width="100"></center>
   </div>
   <div class="modal-footer">
+	<div id="message"></div>
   <a href="#" class="btn btn-primary" >Share</a>
     <a href="#" class="btn" data-dismiss="modal">Close</a>
 

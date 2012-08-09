@@ -5,6 +5,15 @@ width:740px;
 height:800px;
 background-image:url("../img/bg.jpg");
 }
+
+#message {
+    display: inline;
+    float: left;
+    color: #fff;
+    padding-left: 10px;
+    font-size: 20px;
+}
+
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;

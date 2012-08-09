@@ -123,11 +123,20 @@ def get_flame(args):
 		'e': 'Teri kehke lunga',
 	}
 
+    images = {
+		'f': url_for('static', filename='img/f3.gif'),
+		'l': url_for('static', filename='img/l3.jpg'),
+		'a': url_for('static', filename='img/a1.jpg'),
+		'm': url_for('static', filename='img/m1.jpg'),
+		'e': url_for('static', filename='img/e1.jpg'),
+	}
+
     return_dict = {
         'first_name': first_name,
         'second_name': second_name,
         'result': flame_dict[flames],
         'message': message[flames],
+        'image': images[flames],
     }
     return json.dumps(return_dict)
 
