@@ -22,31 +22,31 @@ facebook = oauth.remote_app('facebook',
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return redirect(url_for('login'))
-	
+    
 def _flame(boy, girl):
-	length = len(boy) + len(girl)
-	f = []
-	f = list('flame')
-	a = list(boy)
-	b = list(girl)
-	length1 = []
-	length1 = list(set(a) & set(b))
-	length = length - (len(length1))
-	pointer = 1
-	pointer1 = 0
-	lesser = 0
-	while len(f) != 1:
-		if pointer == length:
-			f.remove(f[pointer1])
-			lesser += 1
-		pointer = pointer + 1
-		pointer1 = pointer1 + 1
-		if pointer > length:
-			pointer=1
-		if pointer1 > 4-lesser:
-			pointer1=0
+    length = len(boy) + len(girl)
+    f = []
+    f = list('flame')
+    a = list(boy)
+    b = list(girl)
+    length1 = []
+    length1 = list(set(a) & set(b))
+    length = length - (len(length1))
+    pointer = 1
+    pointer1 = 0
+    lesser = 0
+    while len(f) != 1:
+        if pointer == length:
+            f.remove(f[pointer1])
+            lesser += 1
+        pointer = pointer + 1
+        pointer1 = pointer1 + 1
+        if pointer > length:
+            pointer=1
+        if pointer1 > 4-lesser:
+            pointer1=0
 
-	return f
+    return f
 
 
 @app.route('/login')
@@ -58,16 +58,16 @@ def login():
 @app.route('/login/authorized')
 @facebook.authorized_handler
 def facebook_authorized(resp):
-	if resp is None:
-		return 'Access denied: reason=%s error=%s' % (
+    if resp is None:
+        return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
             request.args['error_description']
         )
-	session['oauth_token'] = (resp['access_token'], '')
-	me = facebook.get('/me')
+    session['oauth_token'] = (resp['access_token'], '')
+    me = facebook.get('/me')
     #return 'Logged in as id=%s name=%s redirect=%s' % \
         #(me.data['id'], me.data['name'], request.args.get('next'))
-	return redirect(url_for('home'))
+    return redirect(url_for('home'))
 
 @app.route('/home')
 @facebook.authorized_handler
@@ -108,28 +108,37 @@ def get_flame(args):
     
     flames = _flame(first_name, second_name)[0]
     flame_dict = {
-	    'f': 'Friends',
-	    'l': 'Love',
-	    'a': 'Affair',
-	    'm': 'Married',
-	    'e': 'Enemy',
-	}
-	
+        'f': 'Friends',
+        'l': 'Love',
+        'a': 'Affair',
+        'm': 'Married',
+        'e': 'Enemy',
+    }
+    
     message = {
-		'f': 'Friends for ever' ,
-		'l': 'True Love',
-		'a': 'Chup Chup ke',
-		'm': 'Made for each other',
-		'e': 'Teri kehke lunga',
-	}
+        'f': 'Friends for ever' ,
+        'l': 'True Love',
+        'a': 'Chup Chup ke',
+        'm': 'Made for each other',
+        'e': 'Teri kehke lunga',
+    }
 
     images = {
-		'f': url_for('static', filename='img/f3.gif'),
-		'l': url_for('static', filename='img/l3.jpg'),
-		'a': url_for('static', filename='img/a1.jpg'),
-		'm': url_for('static', filename='img/m1.jpg'),
-		'e': url_for('static', filename='img/e1.jpg'),
-	}
+        'f': url_for('static', filename='img/f3.gif'),
+        'l': url_for('static', filename='img/l2.jpg'),
+        'a': url_for('static', filename='img/a1.jpg'),
+        'm': url_for('static', filename='img/m1.jpg'),
+        'e': url_for('static', filename='img/e1.jpg'),
+    }
+    
+    
+    thumb = {
+        'f': url_for('static', filename='img/fp.gif'),
+        'l': url_for('static', filename='img/lp.jpg'),
+        'a': url_for('static', filename='img/ap.jpg'),
+        'm': url_for('static', filename='img/mp.jpg'),
+        'e': url_for('static', filename='img/ep.jpg'),
+    }
 
     return_dict = {
         'first_name': first_name,
@@ -137,6 +146,7 @@ def get_flame(args):
         'result': flame_dict[flames],
         'message': message[flames],
         'image': images[flames],
+        'picture': thumb[flames],
     }
     return json.dumps(return_dict)
 
