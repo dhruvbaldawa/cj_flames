@@ -133,11 +133,11 @@ def get_flame(args):
     
     
     thumb = {
-        'f': url_for('static', filename='img/fp.gif'),
-        'l': url_for('static', filename='img/lp.jpg'),
-        'a': url_for('static', filename='img/ap.jpg'),
-        'm': url_for('static', filename='img/mp.jpg'),
-        'e': url_for('static', filename='img/ep.jpg'),
+        'f': url_for('static', filename='img/fp.gif', _external=True),
+        'l': url_for('static', filename='img/lp.jpg', _external=True),
+        'a': url_for('static', filename='img/ap.jpg', _external=True),
+        'm': url_for('static', filename='img/mp.jpg', _external=True),
+        'e': url_for('static', filename='img/ep.jpg', _external=True),
     }
 
     return_dict = {
