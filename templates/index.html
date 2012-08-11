@@ -24,12 +24,12 @@ var temp=null;
           link: 'https://apps.facebook.com/cj_flames/',
           picture: temp.picture,
           name: 'Check out your FLAMES status....ITS SO FUN',
-          caption: temp.current_user + 'checked FLAMES for' + temp.first_name + ' and ' + temp.second_name + ' and their result is ' + temp.result,
+          caption: temp.current_user + ' checked FLAMES for ' + temp.first_name + ' and ' + temp.second_name + ' and their result is ' + temp.result,
 	      description: 'Developed by CodeJinni (www.codejinni.com)',
         };
 
         function callback(response) {
-          document.getElementById('msg').innerHTML = "Post ID: " + response['post_id'];
+          $('#myModal').modal('hide');
         }
 
         FB.ui(obj, callback);

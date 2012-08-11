@@ -105,6 +105,7 @@ def get_flame(args):
     second = request.args.get('second')
     first_name = _get_details(first)['name']
     second_name = _get_details(second)['name']
+    current_user = _get_details()['name']
     
     flames = _flame(first_name, second_name)[0]
     flame_dict = {
@@ -143,6 +144,7 @@ def get_flame(args):
     return_dict = {
         'first_name': first_name,
         'second_name': second_name,
+        'current_user': current_user,
         'result': flame_dict[flames],
         'message': message[flames],
         'image': images[flames],
