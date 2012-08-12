@@ -21,8 +21,6 @@ facebook = oauth.remote_app('facebook',
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if get_facebook_oauth_token():
-        return redirect(url_for('home'))
     return redirect(url_for('login'))
     
 def _flame(boy, girl):
@@ -53,7 +51,7 @@ def _flame(boy, girl):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    return facebook.authorize(callback=url_for('home',
+    return facebook.authorize(callback=url_for('facebook_authorized',
         next=request.args.get('next') or request.referrer or None,
         _external=True))
 
@@ -66,20 +64,21 @@ def facebook_authorized(resp):
             request.args['error_description']
         )
     session['oauth_token'] = (resp['access_token'], '')
+    print session['oauth_token']
     # me = facebook.get('/me')
     #return 'Logged in as id=%s name=%s redirect=%s' % \
         #(me.data['id'], me.data['name'], request.args.get('next'))
     return redirect(url_for('home'))
 
 @app.route('/home', methods=['GET', 'POST'])
-@facebook.authorized_handler
-def home(resp):
+# @facebook.authorized_handler
+def home():
     # Home Page
     return render_template('index.html')
 
 @app.route('/get_friends')
-@facebook.authorized_handler
-def ajax_friends(q):
+# @facebook.authorized_handler
+def ajax_friends():
     q = request.args.get('tag')
     # FQL Query
     query = "\
@@ -101,8 +100,8 @@ def ajax_friends(q):
     return json.dumps(return_friends)
 
 @app.route('/flame')
-@facebook.authorized_handler
-def get_flame(args):
+# @facebook.authorized_handler
+def get_flame():
     first = request.args.get('first')
     second = request.args.get('second')
     first_name = _get_details(first)['name']
