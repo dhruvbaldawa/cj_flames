@@ -49,13 +49,13 @@ def _flame(boy, girl):
     return f
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     return facebook.authorize(callback=url_for('facebook_authorized',
         next=request.args.get('next') or request.referrer or None,
         _external=True))
 
-@app.route('/login/authorized')
+@app.route('/login/authorized', methods=['GET', 'POST'])
 @facebook.authorized_handler
 def facebook_authorized(resp):
     if resp is None:
@@ -106,6 +106,12 @@ def get_flame(args):
     first_name = _get_details(first)['name']
     second_name = _get_details(second)['name']
     current_user = _get_details()['name']
+    """
+    batch_requests(('GET', '/me', None),
+                   ('GET', '/first', None),
+                   ('GET', '/second', None),
+    )
+    """
     
     flames = _flame(first_name, second_name)[0]
     flame_dict = {
@@ -151,6 +157,26 @@ def get_flame(args):
         'picture': thumb[flames],
     }
     return json.dumps(return_dict)
+"""
+def batch_requests(*args):
+    request = []
+    for method, relative_url, body in args:
+        per_request = {}
+        if method is None:
+            method = 'GET'
+        per_request['method'] = method
+        per_request['relative_url'] = relative_url
+        if body is not None:
+            per_request['body'] = body
+        request.append(per_request)
+    
+    response = facebook.post('/', data={
+                                    'access_token': get_facebook_oauth_token(),
+                                    'batch': json.dumps(request),},\
+                )
+    import pprint
+    pprint.pprint(response.data)
+"""   
 
 def _get_details(user='me'):
     me = facebook.get('/%s' % user)
