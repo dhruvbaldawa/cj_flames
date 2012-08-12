@@ -21,6 +21,8 @@ facebook = oauth.remote_app('facebook',
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    if get_facebook_oauth_token():
+        return redirect(url_for('home'))
     return redirect(url_for('login'))
     
 def _flame(boy, girl):
@@ -51,7 +53,7 @@ def _flame(boy, girl):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    return facebook.authorize(callback=url_for('facebook_authorized',
+    return facebook.authorize(callback=url_for('home',
         next=request.args.get('next') or request.referrer or None,
         _external=True))
 
@@ -64,7 +66,7 @@ def facebook_authorized(resp):
             request.args['error_description']
         )
     session['oauth_token'] = (resp['access_token'], '')
-    me = facebook.get('/me')
+    # me = facebook.get('/me')
     #return 'Logged in as id=%s name=%s redirect=%s' % \
         #(me.data['id'], me.data['name'], request.args.get('next'))
     return redirect(url_for('home'))
