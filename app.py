@@ -53,7 +53,7 @@ def _flame(boy, girl):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     user = _get_details()
-    if not user:
+    if not user.has_key['id']:
         return facebook.authorize(callback=url_for('facebook_authorized',
         next=request.args.get('next') or request.referrer or None,
         _external=True))
