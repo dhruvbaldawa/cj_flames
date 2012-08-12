@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for, session, request, render_template
 from flaskext.oauth import OAuth
 import json
+import os
 from config import *
 
 app = Flask(__name__)
@@ -51,9 +52,13 @@ def _flame(boy, girl):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    return facebook.authorize(callback=url_for('facebook_authorized',
+    user = _get_details()
+    if not user:
+        return facebook.authorize(callback=url_for('facebook_authorized',
         next=request.args.get('next') or request.referrer or None,
         _external=True))
+    else:
+        return redirect(url_for('home'))
 
 @app.route('/login/authorized', methods=['GET', 'POST'])
 @facebook.authorized_handler
@@ -190,4 +195,5 @@ def get_facebook_oauth_token():
 
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
