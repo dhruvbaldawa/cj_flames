@@ -69,7 +69,7 @@ def facebook_authorized(resp):
         #(me.data['id'], me.data['name'], request.args.get('next'))
     return redirect(url_for('home'))
 
-@app.route('/home')
+@app.route('/home', methods=['GET', 'POST'])
 @facebook.authorized_handler
 def home(resp):
     # Home Page
