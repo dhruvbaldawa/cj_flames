@@ -1,5 +1,8 @@
 from flask import Flask, redirect, url_for, session, request, render_template
 from flaskext.oauth import OAuth
+import hmac
+import hashlib
+import base64
 import json
 import os
 from config import *
@@ -20,8 +23,40 @@ facebook = oauth.remote_app('facebook',
                                     user_photos, friends_photos'},
 )
 
+def validate_signed_fb_request(signed_request):
+    """ Returns dictionary with signed request data """
+    try:
+        l = signed_request.split('.', 2)
+        encoded_sig = str(l[0])
+        payload = str(l[1])
+    except IndexError:
+        raise ValueError("'signed_request' malformed")
+    
+    sig = base64.urlsafe_b64decode(encoded_sig + "=" * ((4 - len(encoded_sig) % 4) % 4))
+    data = base64.urlsafe_b64decode(payload + "=" * ((4 - len(payload) % 4) % 4))
+    
+    data = json.loads(data)
+    
+    if data.get('algorithm').upper() != 'HMAC-SHA256':
+        raise ValueError("'signed_request' is using an unknown algorithm")
+    else:
+        expected_sig = hmac.new(CONSUMER_SECRET, msg=payload, digestmod=hashlib.sha256).digest()
+    
+    if sig != expected_sig:
+        raise ValueError("'signed_request' signature mismatch")
+    else:
+        return data
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    print request.form['signed_request']
+    signed_data = validate_signed_fb_request(request.form['signed_request'])
+    if signed_data.has_key('oauth_token'):
+        print signed_data['oauth_token']
+        session['oauth_token'] = (signed_data['oauth_token'], '')
+        session['user'] = signed_data['user_id']
+        return redirect(url_for('home'))
     return redirect(url_for('login'))
     
 def _flame(boy, girl):
@@ -48,17 +83,12 @@ def _flame(boy, girl):
             pointer1=0
 
     return f
-
-
+    
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    user = _get_details()
-    if not user.has_key('id'):
-        return facebook.authorize(callback=url_for('facebook_authorized',
+    return facebook.authorize(callback=url_for('facebook_authorized',
         next=request.args.get('next') or request.referrer or None,
         _external=True))
-    else:
-        return redirect(url_for('home'))
 
 @app.route('/login/authorized', methods=['GET', 'POST'])
 @facebook.authorized_handler
@@ -76,13 +106,11 @@ def facebook_authorized(resp):
     return redirect(url_for('home'))
 
 @app.route('/home', methods=['GET', 'POST'])
-# @facebook.authorized_handler
 def home():
     # Home Page
     return render_template('index.html')
 
 @app.route('/get_friends')
-# @facebook.authorized_handler
 def ajax_friends():
     q = request.args.get('tag')
     # FQL Query
@@ -105,7 +133,6 @@ def ajax_friends():
     return json.dumps(return_friends)
 
 @app.route('/flame')
-# @facebook.authorized_handler
 def get_flame():
     first = request.args.get('first')
     second = request.args.get('second')
