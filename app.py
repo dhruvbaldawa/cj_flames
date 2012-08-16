@@ -11,7 +11,7 @@ from config import *
 
 app = Flask(__name__)
 app.secret_key = 'abcdeghji'
-app.debug = False
+app.debug = True
 oauth = OAuth()
 
 facebook = oauth.remote_app('facebook',
@@ -215,9 +215,9 @@ def batch_requests(*args):
                                     'access_token': get_facebook_oauth_token(),
                                     'batch': json.dumps(request),},\
                 )
-    #import pprint
+    import pprint
     #pprint.pprint(json.dumps(request))
-    #pprint.pprint(response.data)
+    pprint.pprint(response.data)
    
 
 def post_on_wall(return_dict):
@@ -247,9 +247,9 @@ def post_on_wall(return_dict):
         temp['name'] = name % return_dict['current_user']
         temp['caption'] = caption % (other, return_dict['result'])
         temp['description'] = description
-        temp['to'] = user
+        #temp['to'] = user
         
-        batch.append(('POST', '/%s/feed' % return_dict['current_id'], urlencode(temp)))
+        batch.append(('POST', str('/%s/feed' % user), urlencode(temp)))
         other = return_dict['first_name']
     
     return batch_requests(*batch)
@@ -266,7 +266,7 @@ def get_facebook_oauth_token():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(filename='debug.log', level=logging.DEBUG, format='%(asctime)-15s %(message)s')
+    #logging.basicConfig(filename='debug.log', level=logging.DEBUG, format='%(asctime)-15s %(message)s')
     
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
