@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for, session, request, render_template
 from flaskext.oauth import OAuth
+import logging
 import hmac
 import hashlib
 import base64
