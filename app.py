@@ -216,7 +216,7 @@ def batch_requests(*args):
                                     'batch': json.dumps(request),},\
                 )
     import pprint
-    #pprint.pprint(json.dumps(request))
+    pprint.pprint(request)
     pprint.pprint(response.data)
    
 
@@ -247,9 +247,9 @@ def post_on_wall(return_dict):
         temp['name'] = name % return_dict['current_user']
         temp['caption'] = caption % (other, return_dict['result'])
         temp['description'] = description
-        #temp['to'] = user
+        # temp['to'] = user
         
-        batch.append(('POST', str('/%s/feed' % user), urlencode(temp)))
+        batch.append(('POST', '/%s/feed' % user, urlencode(temp)))
         other = return_dict['first_name']
     
     return batch_requests(*batch)
