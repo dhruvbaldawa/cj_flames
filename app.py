@@ -6,11 +6,12 @@ import hashlib
 import base64
 import json
 import os
+from urllib import urlencode
 from config import *
 
 app = Flask(__name__)
 app.secret_key = 'abcdeghji'
-app.debug = True
+app.debug = False
 oauth = OAuth()
 
 facebook = oauth.remote_app('facebook',
@@ -21,7 +22,7 @@ facebook = oauth.remote_app('facebook',
     consumer_key=CONSUMER_KEY,
     consumer_secret=CONSUMER_SECRET,
     request_token_params={'scope': 'email, user_about_me, friends_about_me, \
-                                    user_photos, friends_photos'},
+                                    publish_stream',},
 )
 
 def validate_signed_fb_request(signed_request):
@@ -51,12 +52,13 @@ def validate_signed_fb_request(signed_request):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    print request.form['signed_request']
+    #print request.form['signed_request']
     signed_data = validate_signed_fb_request(request.form['signed_request'])
     if signed_data.has_key('oauth_token'):
-        print signed_data['oauth_token']
+        #print signed_data['oauth_token']
         session['oauth_token'] = (signed_data['oauth_token'], '')
         session['user'] = signed_data['user_id']
+        logging.debug('Logged user: %s', signed_data)
         return redirect(url_for('home'))
     return redirect(url_for('login'))
     
@@ -137,9 +139,9 @@ def ajax_friends():
 def get_flame():
     first = request.args.get('first')
     second = request.args.get('second')
-    first_name = _get_details(first)['name']
-    second_name = _get_details(second)['name']
-    current_user = _get_details()['name']
+    first_user = _get_details(first)
+    second_user = _get_details(second)
+    current_user = _get_details()
     """
     batch_requests(('GET', '/me', None),
                    ('GET', '/first', None),
@@ -147,7 +149,7 @@ def get_flame():
     )
     """
     
-    flames = _flame(first_name, second_name)[0]
+    flames = _flame(first_user['name'], second_user['name'])[0]
     flame_dict = {
         'f': 'Friends',
         'l': 'Love',
@@ -174,7 +176,7 @@ def get_flame():
     
     
     thumb = {
-        'f': url_for('static', filename='img/fp.gif', _external=True),
+        'f': url_for('static', filename='img/fp.jpg', _external=True),
         'l': url_for('static', filename='img/lp.jpg', _external=True),
         'a': url_for('static', filename='img/ap.jpg', _external=True),
         'm': url_for('static', filename='img/mp.jpg', _external=True),
@@ -182,19 +184,24 @@ def get_flame():
     }
 
     return_dict = {
-        'first_name': first_name,
-        'second_name': second_name,
-        'current_user': current_user,
+        'first_name': first_user['name'],
+        'second_name': second_user['name'],
+        'current_user': current_user['name'],
+        'first_user': first_user['id'],
+        'second_user': second_user['id'],
+        'current_id': current_user['id'],
         'result': flame_dict[flames],
         'message': message[flames],
         'image': images[flames],
         'picture': thumb[flames],
     }
+    logging.debug('Logged result: %s', return_dict)
+    post_on_wall(return_dict)
     return json.dumps(return_dict)
-"""
+
 def batch_requests(*args):
     request = []
-    for method, relative_url, body in args:
+    for (method, relative_url, body) in args:
         per_request = {}
         if method is None:
             method = 'GET'
@@ -208,9 +215,45 @@ def batch_requests(*args):
                                     'access_token': get_facebook_oauth_token(),
                                     'batch': json.dumps(request),},\
                 )
-    import pprint
-    pprint.pprint(response.data)
-"""   
+    #import pprint
+    #pprint.pprint(json.dumps(request))
+    #pprint.pprint(response.data)
+   
+
+def post_on_wall(return_dict):
+    body = "\
+      link=%s&\
+      picture=%s&\
+      name=%s&\
+      caption=%s&\
+      description=%s&\
+      to=%s"
+    
+    batch = []
+    
+    link = 'https://apps.facebook.com/cj_flames/'
+    name = '%s just checked your FLAMES status, check theirs'
+    caption = 'Your FLAMES status with %s is %s'
+    description = 'Developed by CodeJinni (www.codejinni.com)'
+    picture = return_dict['picture']
+    
+    l = [return_dict['first_user'], return_dict['second_user']]
+    other = return_dict['second_name']
+    
+    for user in l:
+        temp = {}
+        temp['link'] = link
+        temp['picture'] = return_dict['picture']
+        temp['name'] = name % return_dict['current_user']
+        temp['caption'] = caption % (other, return_dict['result'])
+        temp['description'] = description
+        temp['to'] = user
+        
+        batch.append(('POST', '/%s/feed' % return_dict['current_id'], urlencode(temp)))
+        other = return_dict['first_name']
+    
+    return batch_requests(*batch)
+        
 
 def _get_details(user='me'):
     me = facebook.get('/%s' % user)
@@ -223,5 +266,7 @@ def get_facebook_oauth_token():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(filename='debug.log', level=logging.DEBUG, format='%(asctime)-15s %(message)s')
+    
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
